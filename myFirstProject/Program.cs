@@ -1,4 +1,29 @@
+using myFirstProject.Data;
+using myFirstProject.Repository;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Read config
+var useJson = builder.Configuration.GetValue<bool>("UseJson"); // Add this in appsettings.json
+
+// Register DbContext
+builder.Services.AddDbContext<AdventureWorksContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb")));
+
+// Register repositories
+if (useJson)
+{
+    var jsonPath = Path.Combine(builder.Environment.ContentRootPath, "customers.json");
+    builder.Services.AddSingleton<ICustomerRepository>(new JsonCustomerRepository(jsonPath));
+}
+else
+{
+    builder.Services.AddScoped<ICustomerRepository, SqlCustomerRepository>();
+}
+
+// Add HttpClient factory for API calls
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
