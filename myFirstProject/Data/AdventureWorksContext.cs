@@ -16,6 +16,8 @@ public partial class AdventureWorksContext : DbContext
     {
     }
 
+    public DbSet<Libro> Libros { get; set; }
+
     public virtual DbSet<Address> Addresses { get; set; }
 
     public virtual DbSet<Customer> Customers { get; set; }

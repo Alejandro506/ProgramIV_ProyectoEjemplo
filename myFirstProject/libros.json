@@ -1,0 +1,32 @@
+[
+  {
+    "Id": 1,
+    "OriginalName": "The Hobbit",
+    "SpanishName": "El Hobbit",
+    "Edition": "Primera",
+    "Year": 1937,
+    "Editor": "George Allen & Unwin",
+    "FullName": "The Hobbit / El Hobbit",
+    "Antiquity": 86
+  },
+  {
+    "Id": 2,
+    "OriginalName": "Don Quixote",
+    "SpanishName": "Don Quijote",
+    "Edition": "Segunda",
+    "Year": 1605,
+    "Editor": "Francisco de Robles",
+    "FullName": "Don Quixote / Don Quijote",
+    "Antiquity": 419
+  },
+  {
+    "Id": 3,
+    "OriginalName": "Cien años de soledad",
+    "SpanishName": "Cien años de soledad",
+    "Edition": "Primera",
+    "Year": 1967,
+    "Editor": "Sudamericana",
+    "FullName": "Cien años de soledad / Cien años de soledad",
+    "Antiquity": 57
+  }
+]
