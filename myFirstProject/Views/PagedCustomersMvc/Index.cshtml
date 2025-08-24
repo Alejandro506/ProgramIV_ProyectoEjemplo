@@ -1,0 +1,80 @@
+@model myFirstProject.ViewModels.PagedCustomersViewModel
+
+@{
+    ViewData["Title"] = "Paginated Customer Search";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card my-4">
+                <div class="card-header">
+                    <h2 class="card-title">Search Paginated Customers</h2>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form asp-action="Search" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Customer Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter customer name" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PageSize" class="form-label">Page Size</label>
+                            <select asp-for="PageSize" class="form-control">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+            </div>
+
+            @if (Model.Results != null && Model.Results.Items.Any())
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Customer ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        @foreach (var customer in Model.Results.Items)
+                        {
+                            <tr>
+                                <td>@customer.CustomerID</td>
+                                <td>@customer.DisplayName</td>
+                                <td>@customer.EmailAddress</td>
+                                <td>@customer.Phone</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @await Html.PartialAsync("_Pagination", new myFirstProject.ViewModels.PaginationViewModel 
+                {
+                    Pagination = Model.Results.Pagination,
+                    Name = Model.Name
+                })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,52 +1,54 @@
-using Microsoft.EntityFrameworkCore;
 using myFirstProject.Data;
-using myFirstProject.MyInterfaces;
-using myFirstProject.MyRepositories;
+using myFirstProject.Repository;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 📦 Leer configuración para elegir origen de datos
-var useJson = builder.Configuration.GetValue<bool>("UseJson");
+// Read config
+var useJson = builder.Configuration.GetValue<bool>("UseJson"); // Add this in appsettings.json
 
-// 🗃️ Registrar DbContext (solo si se usará SQL)
+// Register DbContext
 builder.Services.AddDbContext<AdventureWorksContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb")));
 
-// 🧩 Inyectar implementación del repositorio de libros
+// Register repositories
 if (useJson)
 {
-    var jsonPath = Path.Combine(builder.Environment.ContentRootPath, "libros.json");
-    builder.Services.AddSingleton<ILibroRepository>(new JsonLibroRepository(jsonPath));
+    var jsonPath = Path.Combine(builder.Environment.ContentRootPath, "customers.json");
+    builder.Services.AddSingleton<ICustomerRepository>(new JsonCustomerRepository(jsonPath));
 }
 else
 {
-    builder.Services.AddScoped<ILibroRepository, SqlLibroRepository>();
+    builder.Services.AddScoped<ICustomerRepository, SqlCustomerRepository>();
 }
 
-// 🌐 Agregar cliente HTTP para API si se necesita
+// Add HttpClient factory for API calls
 builder.Services.AddHttpClient();
 
-// 🧠 Agregar soporte para controladores con vistas
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// 🔐 Manejo de errores y HSTS
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-// 🌍 Middlewares esenciales
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Asegura que pueda servir CSS, JS, etc.
 app.UseRouting();
+
 app.UseAuthorization();
 
-// 🧭 Ruta por defecto: Libros/Buscar
+app.MapStaticAssets();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Libros}/{action=Buscar}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
 
 app.Run();

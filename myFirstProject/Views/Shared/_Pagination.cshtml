@@ -1,0 +1,41 @@
+@model myFirstProject.ViewModels.PaginationViewModel
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var name = Model.Name ?? "";
+    var pageSize = Model.Pagination.PageSize.ToString();
+    
+    // Build URL with query string to ensure all parameters are included
+    Func<int, string> buildPaginationUrl = (page) => 
+    {
+        var baseUrl = Url.Action(currentAction, currentController);
+        var encodedName = Uri.EscapeDataString(name);
+        return $"{baseUrl}?name={encodedName}&pageNumber={page}&pageSize={pageSize}";
+    };
+}
+
+@if (Model.Pagination.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.Pagination.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" href="@buildPaginationUrl(Model.Pagination.PageNumber - 1)">Previous</a>
+            </li>
+            
+            @foreach (var pageNumber in Model.Pagination.GetPageNumbers())
+            {
+                <li class="page-item @(Model.Pagination.PageNumber == pageNumber ? "active" : "")">
+                    <a class="page-link" href="@buildPaginationUrl(pageNumber)">@pageNumber</a>
+                </li>
+            }
+            
+            <li class="page-item @(Model.Pagination.HasNextPage ? "" : "disabled")">
+                <a class="page-link" href="@buildPaginationUrl(Model.Pagination.PageNumber + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="text-center mt-3">
+        <small class="text-muted">Page @Model.Pagination.PageNumber of @Model.Pagination.TotalPages | Total Items: @Model.Pagination.TotalItems</small>
+    </div>
+}

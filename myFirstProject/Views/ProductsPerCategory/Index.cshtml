@@ -1,0 +1,98 @@
+@using myFirstProject.Models
+@{
+    ViewData["Title"] = "Products Per Category";
+    var categories = ViewBag.Categories as List<ProductCategory>;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Products Per Category</h2>
+            <p class="text-muted">Select a category to view its products. The product list will update automatically using AJAX.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Master: Product Categories</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="categorySelect" class="form-label">Select a Product Category:</label>
+                        <select id="categorySelect" class="form-select form-control">
+                            <option value="">-- Please select a category --</option>
+                            @if (categories != null)
+                            {
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.ProductCategoryID">@category.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Detail: Products in Selected Category</h5>
+                </div>
+                <div class="card-body">
+                    <div id="productsContainer">
+                        <p class="text-muted">Please select a category above to view products.</p>
+                    </div>
+                    <div id="loadingSpinner" class="text-center" style="display: none;">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Loading products...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Handle category selection change
+            $('#categorySelect').change(function () {
+                var categoryId = $(this).val();
+                
+                if (categoryId === "") {
+                    $('#productsContainer').html('<p class="text-muted">Please select a category above to view products.</p>');
+                    return;
+                }
+
+                // Show loading spinner
+                $('#loadingSpinner').show();
+                $('#productsContainer').hide();
+
+                // Make AJAX call to get products for selected category
+                $.ajax({
+                    url: '@Url.Action("GetProductsByCategory", "ProductsPerCategory")',
+                    type: 'GET',
+                    data: { categoryId: categoryId },
+                    success: function (data) {
+                        // Hide loading spinner and show results
+                        $('#loadingSpinner').hide();
+                        $('#productsContainer').html(data).show();
+                    },
+                    error: function (xhr, status, error) {
+                        // Hide loading spinner and show error
+                        $('#loadingSpinner').hide();
+                        $('#productsContainer').html('<div class="alert alert-danger">Error loading products: ' + error + '</div>').show();
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+}

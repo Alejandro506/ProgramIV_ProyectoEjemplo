@@ -4,6 +4,48 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Cartaguito Campeón2</p>
+    <p>Cartaguito Campeón</p>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">🚀 New Feature: Paginated Customer Search</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">📄 Traditional Customer Search</h5>
+                            <p class="card-text">Original customer search with basic filtering and record limits.</p>
+                            <a href="@Url.Action("Index", "CustomerSearch")" class="btn btn-primary">Try Classic Search</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">⚡ Paginated Customer Search</h5>
+                            <p class="card-text">Enhanced search with pagination, page navigation, and improved performance.</p>
+                            <a href="@Url.Action("Index", "PagedCustomersMvc")" class="btn btn-success">Try Paginated Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3 class="text-center">🔗 API Endpoints</h3>
+            <div class="alert alert-info">
+                <strong>New Paginated API:</strong>
+                <ul>
+                    <li><code>GET /PagedCustomers?pageNumber=1&pageSize=10</code> - Get paginated customers</li>
+                    <li><code>GET /PagedCustomers/search?name=John&pageNumber=1&pageSize=5</code> - Search with pagination</li>
+                    <li><code>GET /PagedCustomers/stats</code> - Get pagination statistics</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

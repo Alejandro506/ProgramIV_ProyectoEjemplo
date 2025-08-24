@@ -1,4 +1,5 @@
 using System.Text.Json;
+using myFirstProject.MyModels;
 using myFirstProject.Models;
 
 namespace myFirstProject.Repository;
@@ -38,5 +39,46 @@ public class JsonCustomerRepository : ICustomerRepository
     {
         return _customers.FirstOrDefault(c => c.CustomerID == customerId);
     }
-}
 
+    // New pagination methods
+    public PaginatedResult<Customer> GetCustomersPaginated(int pageNumber, int pageSize)
+    {
+        var totalItems = GetTotalCustomersCount();
+        var customers = _customers
+            .OrderBy(c => c.CustomerID) // Consistent ordering for pagination
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return PaginatedResult<Customer>.Create(customers, totalItems, pageNumber, pageSize);
+    }
+
+    public PaginatedResult<Customer> QueryByNamePaginated(string name, int pageNumber, int pageSize)
+    {
+        var totalItems = GetTotalCustomersCountByName(name);
+        var customers = _customers
+            .Where(c => (!string.IsNullOrEmpty(c.FirstName) && c.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(c.MiddleName) && c.MiddleName.Contains(name, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(c.LastName) && c.LastName.Contains(name, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(c => c.CustomerID) // Consistent ordering for pagination
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return PaginatedResult<Customer>.Create(customers, totalItems, pageNumber, pageSize);
+    }
+
+    public int GetTotalCustomersCount()
+    {
+        return _customers.Count;
+    }
+
+    public int GetTotalCustomersCountByName(string name)
+    {
+        return _customers
+            .Where(c => (!string.IsNullOrEmpty(c.FirstName) && c.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(c.MiddleName) && c.MiddleName.Contains(name, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(c.LastName) && c.LastName.Contains(name, StringComparison.OrdinalIgnoreCase)))
+            .Count();
+    }
+}
