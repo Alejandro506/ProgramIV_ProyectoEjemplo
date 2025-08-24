@@ -1,17 +1,23 @@
-using myFirstProject.Data;
-using myFirstProject.Repository;
+using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
+using myFirstProject.Data.Models;      // AppDbContext (scaffold)
+using myFirstProject.Repository;       // ICustomerRepository, JsonCustomerRepository, SqlCustomerRepository
+using myFirstProject.Services;         // CitasService (SP con Dapper)
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read config
-var useJson = builder.Configuration.GetValue<bool>("UseJson"); // Add this in appsettings.json
+// ----- Flags de configuración -----
+var useJson = builder.Configuration.GetValue<bool>("UseJson");
 
-// Register DbContext
-builder.Services.AddDbContext<AdventureWorksContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb")));
+// ----- EF Core: DbContext -----
+var connectionString = builder.Configuration.GetConnectionString("Default")
+    ?? throw new InvalidOperationException("Falta ConnectionStrings:Default en appsettings.json (o Secret Manager).");
 
-// Register repositories
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// ----- Repositorios -----
 if (useJson)
 {
     var jsonPath = Path.Combine(builder.Environment.ContentRootPath, "customers.json");
@@ -22,25 +28,26 @@ else
     builder.Services.AddScoped<ICustomerRepository, SqlCustomerRepository>();
 }
 
-// Add HttpClient factory for API calls
+// ----- Servicios (SP de Citas con Dapper) -----
+builder.Services.AddScoped<CitasService>();
+
+// HTTP Client (si consumes APIs externas)
 builder.Services.AddHttpClient();
 
-// Add services to the container.
+// MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ----- Pipeline HTTP -----
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -50,5 +57,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Endpoint de verificación rápida (DI + conexión)
+app.MapGet("/pingdb", async (AppDbContext db) =>
+{
+    var any = await db.Clientes.Take(1).ToListAsync();
+    return Results.Ok(new { ok = true, rows = any.Count });
+});
 
 app.Run();

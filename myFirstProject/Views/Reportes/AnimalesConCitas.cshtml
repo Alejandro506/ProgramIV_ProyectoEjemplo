@@ -1,0 +1,26 @@
+@model IEnumerable<myFirstProject.Data.Models.Vista_Animales_Cita>
+
+<h2>Animales con citas</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Animal</th>
+            <th>Cliente</th>
+            <th>Doctor</th>
+            <th>Fecha/Hora</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var x in Model)
+    {
+        <tr>
+            <td>@x.NombreAnimal</td>
+            <td>@x.NombreCliente</td>
+            <td>@x.NombreDoctor</td>
+            <td>@x.FechaHora</td>
+            <td>@x.Estado</td>
+        </tr>
+    }
+    </tbody>
+</table>

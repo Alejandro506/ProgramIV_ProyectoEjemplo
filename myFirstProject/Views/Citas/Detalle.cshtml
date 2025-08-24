@@ -1,0 +1,47 @@
+@using myFirstProject.Data.Models
+@model Cita
+@{
+    ViewData["Title"] = "Detalle de Cita";
+    var historial = (IEnumerable<dynamic>)ViewBag.Historial;
+}
+
+<h2>Detalle de Cita @Model.IdCita</h2>
+@if (TempData["ok"] != null) { <div class="alert alert-success">@TempData["ok"]</div> }
+
+<table class="table">
+    <tr><th>Animal</th><td>@Model.IdAnimalNavigation?.Nombre</td></tr>
+    <tr><th>Doctor</th><td>@Model.IdDoctorNavigation?.Nombre</td></tr>
+    <tr><th>Fecha</th><td>@Model.FechaHora</td></tr>
+    <tr><th>Estado</th><td>@Model.Estado</td></tr>
+</table>
+
+<h4>Historial</h4>
+<table class="table table-sm">
+    <thead><tr><th>Acción</th><th>Fecha</th><th>Obs</th></tr></thead>
+    <tbody>
+    @foreach (var h in historial)
+    {
+        <tr>
+            <td>@h.Accion</td>
+            <td>@h.FechaAccion</td>
+            <td>@h.Observaciones</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<hr/>
+<h5>Reagendar</h5>
+<form asp-action="Reagendar" method="post">
+    <input type="hidden" name="IdCita" value="@Model.IdCita" />
+    <input type="datetime-local" name="NuevaFechaHora" class="form-control mb-2" />
+    <input type="text" name="Observaciones" class="form-control mb-2" placeholder="Observaciones" />
+    <button class="btn btn-warning">Reagendar</button>
+</form>
+
+<h5 class="mt-4">Cancelar</h5>
+<form asp-action="Cancelar" method="post">
+    <input type="hidden" name="IdCita" value="@Model.IdCita" />
+    <input type="text" name="Observaciones" class="form-control mb-2" placeholder="Motivo" />
+    <button class="btn btn-danger">Cancelar</button>
+</form>
