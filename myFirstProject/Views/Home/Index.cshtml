@@ -1,51 +1,109 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Cartaguito Campeón</p>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .hero {
+        background: radial-gradient(1200px 400px at 0% -20%, rgba(59,130,246,.25), transparent 60%),
+                    radial-gradient(1200px 600px at 100% -10%, rgba(147,51,234,.22), transparent 60%),
+                    linear-gradient(180deg, #0b1020 0%, #0b1222 100%);
+        color: #e5e7eb;
+        border-radius: 22px;
+        box-shadow: 0 30px 80px rgba(2,6,23,.35);
+        border: 1px solid rgba(255,255,255,.08);
+    }
+    .hero h1 { letter-spacing:.5px; }
+    .chip { font-weight:700; border-radius:999px; padding:.25rem .6rem }
+    .chip-blue { background:#dbeafe; color:#1d4ed8 }
+    .chip-violet { background:#ede9fe; color:#6d28d9 }
+    .chip-orange { background:#ffedd5; color:#c2410c }
+    .card-tile { border-radius:16px; border:1px solid #e5e7eb }
+    .card-tile:hover { box-shadow:0 12px 30px rgba(2,6,23,.18) }
+</style>
+
+<div class="hero p-4 p-md-5 mb-4">
+    <div class="d-flex gap-2 mb-3">
+        <span class="chip chip-blue">Clínica</span>
+        <span class="chip chip-violet">Citas</span>
+        <span class="chip chip-orange">Reportes</span>
+    </div>
+
+    <h1 class="display-5 fw-bold mb-2">
+        Bienvenido a <span class="brand-gradient">Mi Mas Cota Con Sentida</span>
+    </h1>
+    <p class="lead mb-4">
+        Plataforma para gestionar clientes, mascotas y citas médicas; reportes y consulta paginada.
+        Interfaz rápida, clara y lista para producción.
+    </p>
+
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-light fw-semibold" asp-controller="Reportes" asp-action="AnimalesConCitas">
+            Ver animales con citas
+        </a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="HistorialCitas" asp-action="Index">
+            Historial de citas
+        </a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="PagedCustomersMvc" asp-action="Index">
+            Búsqueda de clientes
+        </a>
+    </div>
 </div>
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-center mb-4">🚀 New Feature: Paginated Customer Search</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">📄 Traditional Customer Search</h5>
-                            <p class="card-text">Original customer search with basic filtering and record limits.</p>
-                            <a href="@Url.Action("Index", "CustomerSearch")" class="btn btn-primary">Try Classic Search</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">⚡ Paginated Customer Search</h5>
-                            <p class="card-text">Enhanced search with pagination, page navigation, and improved performance.</p>
-                            <a href="@Url.Action("Index", "PagedCustomersMvc")" class="btn btn-success">Try Paginated Search</a>
-                        </div>
-                    </div>
-                </div>
+<div class="row g-4">
+    <div class="col-xl-4">
+        <div class="card card-tile h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Gestión de Citas</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <a asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a>
+                    </li>
+                    <li class="mb-2">
+                        <a asp-controller="Reportes" asp-action="AnimalesConCitas">Animales con Citas</a>
+                    </li>
+                    <li>
+                        <a href="/api/reportes/animales-con-citas" target="_blank">
+                            API: Animales con Citas (JSON)
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h3 class="text-center">🔗 API Endpoints</h3>
-            <div class="alert alert-info">
-                <strong>New Paginated API:</strong>
-                <ul>
-                    <li><code>GET /PagedCustomers?pageNumber=1&pageSize=10</code> - Get paginated customers</li>
-                    <li><code>GET /PagedCustomers/search?name=John&pageNumber=1&pageSize=5</code> - Search with pagination</li>
-                    <li><code>GET /PagedCustomers/stats</code> - Get pagination statistics</li>
+
+    <div class="col-xl-4">
+        <div class="card card-tile h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Clientes & Mascotas</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <a asp-controller="CustomerSearch" asp-action="Index">Búsqueda clásica</a>
+                    </li>
+                    <li class="mb-2">
+                        <a asp-controller="PagedCustomersMvc" asp-action="Index">Búsqueda paginada</a>
+                    </li>
+                    <li>
+                        <a asp-controller="PagedCustomersMvc" asp-action="Stats">Estadísticas de paginación</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card card-tile h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Módulos de Ejemplo</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <a asp-controller="ProductsPerCategory" asp-action="Index">Productos por Categoría</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
+

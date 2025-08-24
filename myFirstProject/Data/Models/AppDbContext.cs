@@ -26,18 +26,17 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<RolesPermiso> RolesPermisos { get; set; }
     public virtual DbSet<TiposAnimale> TiposAnimales { get; set; }
     public virtual DbSet<Usuario> Usuarios { get; set; }
-    public virtual DbSet<Vista_Animales_Cita> Vista_Animales_Citas { get; set; }
 
-
-    // === VISTAS ===
-    // Deja SOLO este DbSet para la vista (el plural causaba conflicto)
+    // === VISTAS (solo una propiedad por vista) ===
+    public virtual DbSet<Vista_Animales_Cita>        Vista_Animales_Citas { get; set; }
     public virtual DbSet<Vista_HistorialCitasDetalle> Vista_HistorialCitasDetalles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Tu esquema por defecto
+        // Esquema por defecto
         modelBuilder.HasDefaultSchema("PrograAvanzada202502User06");
 
+        // ====== ENTIDADES ======
         modelBuilder.Entity<Animale>(entity =>
         {
             entity.HasKey(e => e.IdAnimal).HasName("PK__Animales__951092F03EFDEE18");
@@ -229,13 +228,12 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Usuario_Rol");
         });
 
-        // ====== MAPEOS DE VISTAS ======
-
+        // ====== MAPEOS DE VISTAS (una vez cada una) ======
         modelBuilder.Entity<Vista_Animales_Cita>(entity =>
         {
             entity.HasNoKey();
-            // OJO: nombre correcto y esquema por defecto ya configurado arriba
-            entity.ToView("Vista_Animales_Citas", "PrograAvanzada202502User06");
+            // Con HasDefaultSchema basta el nombre de la vista:
+            entity.ToView("Vista_Animales_Citas");
 
             entity.Property(e => e.Estado).HasMaxLength(20).IsUnicode(false);
             entity.Property(e => e.FechaHora).HasColumnType("datetime");
