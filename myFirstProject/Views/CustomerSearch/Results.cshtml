@@ -1,0 +1,127 @@
+@model myFirstProject.ViewModels.CustomerSearchResultsViewModel
+
+@{
+    ViewData["Title"] = "Customer Search Results";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title mb-0">
+                        <i class="fas fa-table me-2"></i>Search Results
+                    </h2>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    @if (Model.HasResults)
+                    {
+                        <div class="alert alert-success mb-3">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Found <strong>@Model.ResultCount</strong> customer(s) matching your criteria.
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Customer ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Company</th>
+                                        <th>Sales Person</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var customer in Model.Results)
+                                    {
+                                        <tr>
+                                            <td><strong>@customer.CustomerID</strong></td>
+                                            <td>
+                                                <div>@customer.DisplayName</div>
+                                                @if (!string.IsNullOrEmpty(customer.Initials))
+                                                {
+                                                    <small class="text-muted">(@customer.Initials)</small>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(customer.EmailAddress))
+                                                {
+                                                    <a href="mailto:@customer.EmailAddress">@customer.EmailAddress</a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">N/A</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(customer.Phone))
+                                                {
+                                                    @customer.Phone
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">N/A</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(customer.CompanyName))
+                                                {
+                                                    @customer.CompanyName
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Individual</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(customer.SalesPerson))
+                                                {
+                                                    @customer.SalesPerson
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">N/A</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No customers found for the given criteria.
+                        </div>
+                    }
+
+                    <hr />
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Index", "CustomerSearch")" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-1"></i>New Search
+                        </a>
+                        @if (Model.HasResults)
+                        {
+                            <div class="text-muted">
+                                <small>Showing @Model.ResultCount result(s)</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

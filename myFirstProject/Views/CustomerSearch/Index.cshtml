@@ -1,0 +1,82 @@
+@model myFirstProject.ViewModels.CustomerSearchViewModel
+
+@{
+    ViewData["Title"] = "Customer Search";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title mb-0">
+                        <i class="fas fa-search me-2"></i>Customer Search
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Enter search criteria to find customers. You can search by Customer ID, name, or both.
+                    </p>
+
+                    <form asp-action="Search" method="post" class="needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="CustomerID" class="form-label"></label>
+                                    <input asp-for="CustomerID" class="form-control" placeholder="Enter customer ID (optional)" />
+                                    <span asp-validation-for="CustomerID" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label"></label>
+                                    <input asp-for="Name" class="form-control" placeholder="Enter customer name (optional)" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="MaxNumberOfRecords" class="form-label"></label>
+                                    <input asp-for="MaxNumberOfRecords" class="form-control" min="1" max="50" />
+                                    <span asp-validation-for="MaxNumberOfRecords" class="text-danger"></span>
+                                    <div class="form-text">Maximum number of records to return (1-50)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Search Tips:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Leave both Customer ID and Name empty to get all customers (up to the specified limit)</li>
+                                    <li>Enter only Customer ID to find a specific customer</li>
+                                    <li>Enter only Name to search by customer name (partial matches supported)</li>
+                                    <li>You can enter both Customer ID and Name for more specific searches</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="reset" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-undo me-1"></i>Reset
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i>Search Customers
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

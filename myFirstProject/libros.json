@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "OriginalName": "The Hobbit",
+    "SpanishName": "El Hobbit",
+    "Edition": "Primera",
+    "Year": 1937,
+    "Editor": "George Allen & Unwin",
+    "FullName": "The Hobbit / El Hobbit",
+    "Antiquity": 88
+  },
+  {
+    "Id": 2,
+    "OriginalName": "Don Quixote",
+    "SpanishName": "Don Quijote",
+    "Edition": "Segunda",
+    "Year": 1605,
+    "Editor": "Francisco de Robles",
+    "FullName": "Don Quixote / Don Quijote",
+    "Antiquity": 420
+  },
+  {
+    "Id": 3,
+    "OriginalName": "Cien años de soledad",
+    "SpanishName": "Cien años de soledad",
+    "Edition": "Primera",
+    "Year": 1967,
+    "Editor": "Sudamericana",
+    "FullName": "Cien años de soledad / Cien años de soledad",
+    "Antiquity": 58
+  },
+  {
+    "Id": 4,
+    "OriginalName": "El Señor de los Anillos",
+    "SpanishName": "El Señor de los Anillos",
+    "Edition": "Primera",
+    "Year": 1954,
+    "Editor": "J.R.R. Tolkien",
+    "FullName": "El Señor de los Anillos / El Señor de los Anillos",
+    "Antiquity": 71
+  },
+  {
+    "Id": 5,
+    "OriginalName": "Matar a un Ruiseñor",
+    "SpanishName": "Matar a un Ruiseñor",
+    "Edition": "Primera",
+    "Year": 1960,
+    "Editor": "Harper Lee",
+    "FullName": "Matar a un Ruiseñor / Matar a un Ruiseñor",
+    "Antiquity": 65
+  },
+  {
+    "Id": 6,
+    "OriginalName": "1984",
+    "SpanishName": "1984",
+    "Edition": "Primera",
+    "Year": 1949,
+    "Editor": "George Orwell",
+    "FullName": "1984 / 1984",
+    "Antiquity": 76
+  }
+]

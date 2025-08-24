@@ -1,29 +1,52 @@
+using Microsoft.EntityFrameworkCore;
+using myFirstProject.Data;
+using myFirstProject.MyInterfaces;
+using myFirstProject.MyRepositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 📦 Leer configuración para elegir origen de datos
+var useJson = builder.Configuration.GetValue<bool>("UseJson");
+
+// 🗃️ Registrar DbContext (solo si se usará SQL)
+builder.Services.AddDbContext<AdventureWorksContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb")));
+
+// 🧩 Inyectar implementación del repositorio de libros
+if (useJson)
+{
+    var jsonPath = Path.Combine(builder.Environment.ContentRootPath, "libros.json");
+    builder.Services.AddSingleton<ILibroRepository>(new JsonLibroRepository(jsonPath));
+}
+else
+{
+    builder.Services.AddScoped<ILibroRepository, SqlLibroRepository>();
+}
+
+// 🌐 Agregar cliente HTTP para API si se necesita
+builder.Services.AddHttpClient();
+
+// 🧠 Agregar soporte para controladores con vistas
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 🔐 Manejo de errores y HSTS
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+// 🌍 Middlewares esenciales
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // Asegura que pueda servir CSS, JS, etc.
 app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+// 🧭 Ruta por defecto: Libros/Buscar
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Libros}/{action=Buscar}/{id?}");
 
 app.Run();
