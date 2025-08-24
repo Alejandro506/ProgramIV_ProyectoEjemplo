@@ -1,0 +1,92 @@
+@model myFirstProject.ViewModels.ReagendarBusquedaVM
+@{
+    ViewData["Title"] = "Reagendar Cita";
+}
+
+<h2 class="mb-3">Reagendar Cita</h2>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Buscar (animal o cliente)</label>
+        <input type="text" name="q" value="@Model.Q" class="form-control" placeholder="Ej: Firu, Ana, etc." />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Desde</label>
+        <input type="date" name="desde" value="@Model.Desde?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Hasta</label>
+        <input type="date" name="hasta" value="@Model.Hasta?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <div class="form-check me-3">
+            <input class="form-check-input" type="checkbox" id="incCan" name="incluirCanceladas" value="true" @(Model.IncluirCanceladas ? "checked" : "") />
+            <label class="form-check-label" for="incCan">Incluir canceladas</label>
+        </div>
+        <button class="btn btn-primary">Buscar</button>
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+        <a asp-action="Nueva" class="btn btn-outline-secondary w-100">Registrar</a>
+    </div>
+</form>
+
+@if (Model.Citas.Count == 0)
+{
+    <div class="alert alert-info">No hay citas en el rango/criterios especificados.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha/Hora actual</th>
+                <th>Animal</th>
+                <th>Cliente</th>
+                <th>Doctor</th>
+                <th>Estado</th>
+                <th style="width: 17rem;">Nueva fecha/hora</th>
+                <th class="text-end">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model.Citas)
+        {
+            var puedeReagendar = string.Equals(c.Estado, "Agendada", System.StringComparison.OrdinalIgnoreCase);
+            <tr>
+                <td>@c.IdCita</td>
+                <td>@c.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@c.Animal</td>
+                <td>@c.Cliente</td>
+                <td>@c.Doctor</td>
+                <td>
+                    @if (puedeReagendar)
+                    {
+                        <span class="badge bg-success">Agendada</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Cancelada</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="Reagendar" method="post" class="d-flex gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="IdCita" value="@c.IdCita" />
+                        <input type="datetime-local"
+                               name="NuevaFechaHora"
+                               class="form-control"
+                               step="1800"
+                               @(puedeReagendar ? null : "disabled") />
+                        <input type="hidden" name="Observaciones" value="Reagendada desde listado" />
+                        <button class="btn btn-warning" @(puedeReagendar ? null : "disabled")>Reagendar</button>
+                    </form>
+                </td>
+                <td class="text-end">
+                    <a asp-action="Detalle" asp-route-id="@c.IdCita" class="btn btn-sm btn-outline-secondary">Detalle</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

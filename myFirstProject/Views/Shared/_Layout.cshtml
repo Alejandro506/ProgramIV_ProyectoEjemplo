@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - myFirstProject</title>
+    <title>@ViewData["Title"] - Mi Mascota Consentida</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -12,36 +12,95 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm sticky-top">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">myFirstProject</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    Mi Mascota Consentida
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Mantenimientos -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Mantenimientos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="TiposAnimales" asp-action="Index">Tipos de Animales</a></li>
+                                <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
+                                <li><a class="dropdown-item" asp-controller="Doctores" asp-action="Index">Doctores</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Citas -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Citas
+                            </a>
+                            <ul class="dropdown-menu">
+                                
+                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="Nueva">Registrar cita</a></li>
+                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="ReagendarListado">Reagendar cita</a></li>
+                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="Cancelar">Cancelar cita</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="GenerarSemana">Citas de la semana</a></li>
+                                <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Reportes -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Reportes
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Reportes" asp-action="AnimalesConCitas">Animales con Citas</a></li>
+                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="GenerarSemana">Citas de la semana</a></li>
+                                <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Búsquedas -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Búsquedas
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="CustomerSearch" asp-action="Index">Clásica</a></li>
+                                <li><a class="dropdown-item" asp-controller="PagedCustomersMvc" asp-action="Index">Paginada</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- API -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                API
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/api/reportes/animales-con-citas" target="_blank">Animales con Citas (JSON)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerSearch" asp-action="Index">Customer Search</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PagedCustomersMvc" asp-action="Index">Paginated Customers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ProductsPerCategory" asp-action="Index">Products Per Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="container my-3">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -49,9 +108,10 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - myFirstProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - Mi Mascota Consentida - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

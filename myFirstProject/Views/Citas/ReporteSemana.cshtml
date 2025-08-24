@@ -1,0 +1,46 @@
+@using myFirstProject.ViewModels
+@using System.Globalization
+@model IEnumerable<SemanaResumenRow>
+
+@{
+    ViewData["Title"] = "Citas de la Semana";
+    var inicio = (DateOnly)ViewBag.SemanaInicio;
+    var fin    = (DateOnly)ViewBag.SemanaFin;
+}
+
+<h2>Citas de la semana (@inicio.ToShortDateString() – @fin.ToShortDateString())</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <label class="form-label">Semana que inicia en</label>
+        <input name="weekStart"
+               type="date"
+               value="@inicio.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd")"
+               class="form-control" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button class="btn btn-primary">Ver</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Día</th>
+            <th class="text-end">Total</th>
+            <th class="text-end">Agendadas</th>
+            <th class="text-end">Canceladas</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.Fecha.ToDateTime(TimeOnly.MinValue).ToString("dddd dd/MM", CultureInfo.GetCultureInfo("es-CR"))</td>
+            <td class="text-end">@r.Total</td>
+            <td class="text-end">@r.Agendadas</td>
+            <td class="text-end">@r.Canceladas</td>
+        </tr>
+    }
+    </tbody>
+</table>

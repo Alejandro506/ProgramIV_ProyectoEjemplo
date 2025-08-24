@@ -3,107 +3,117 @@
 }
 
 <style>
-    .hero {
-        background: radial-gradient(1200px 400px at 0% -20%, rgba(59,130,246,.25), transparent 60%),
-                    radial-gradient(1200px 600px at 100% -10%, rgba(147,51,234,.22), transparent 60%),
-                    linear-gradient(180deg, #0b1020 0%, #0b1222 100%);
-        color: #e5e7eb;
-        border-radius: 22px;
-        box-shadow: 0 30px 80px rgba(2,6,23,.35);
-        border: 1px solid rgba(255,255,255,.08);
-    }
-    .hero h1 { letter-spacing:.5px; }
-    .chip { font-weight:700; border-radius:999px; padding:.25rem .6rem }
-    .chip-blue { background:#dbeafe; color:#1d4ed8 }
-    .chip-violet { background:#ede9fe; color:#6d28d9 }
-    .chip-orange { background:#ffedd5; color:#c2410c }
-    .card-tile { border-radius:16px; border:1px solid #e5e7eb }
-    .card-tile:hover { box-shadow:0 12px 30px rgba(2,6,23,.18) }
+  .hero {
+    background: radial-gradient(900px 400px at -10% -30%, rgba(59,130,246,.25), transparent 60%),
+                radial-gradient(900px 500px at 110% -20%, rgba(147,51,234,.22), transparent 60%),
+                linear-gradient(180deg, #0b1020 0%, #0b1222 100%);
+    color: #e5e7eb; border-radius: 22px; border:1px solid rgba(255,255,255,.08);
+    box-shadow: 0 30px 80px rgba(2,6,23,.35);
+  }
+  .chip { font-weight:700; border-radius:999px; padding:.25rem .6rem }
+  .chip-blue { background:#dbeafe; color:#1d4ed8 }
+  .chip-violet{ background:#ede9fe; color:#6d28d9 }
+  .chip-orange{ background:#ffedd5; color:#c2410c }
+  .tile { border-radius:16px; border:1px solid #e5e7eb; transition:transform .12s ease, box-shadow .12s ease }
+  .tile:hover { transform:translateY(-2px); box-shadow:0 14px 34px rgba(2,6,23,.18) }
+  .kpi { border-radius:14px; border:1px dashed rgba(255,255,255,.25) }
 </style>
 
 <div class="hero p-4 p-md-5 mb-4">
-    <div class="d-flex gap-2 mb-3">
-        <span class="chip chip-blue">Clínica</span>
-        <span class="chip chip-violet">Citas</span>
-        <span class="chip chip-orange">Reportes</span>
+  <div class="d-flex gap-2 mb-3">
+    <span class="chip chip-blue">Clínica</span>
+    <span class="chip chip-violet">Citas</span>
+    <span class="chip chip-orange">Reportes</span>
+  </div>
+
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <h1 class="display-5 fw-bold mb-3">Bienvenido a <span class="text-info">Mi Mascota Consentida</span></h1>
+      <p class="lead mb-4">Administra <b>tipos de animales</b>, <b>clientes</b>, <b>doctores</b> y todas las operaciones de <b>citas</b> (generar, agendar, reagendar, cancelar). Además, consulta reportes e historial.</p>
+
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-light fw-semibold" asp-controller="Citas" asp-action="Agendar">Agendar cita</a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="Reagendar">Reagendar</a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="Cancelar">Cancelar</a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="GenerarSemana">Generar semana</a>
+      </div>
     </div>
 
-    <h1 class="display-5 fw-bold mb-2">
-        Bienvenido a <span class="brand-gradient">Mi Mas Cota Con Sentida</span>
-    </h1>
-    <p class="lead mb-4">
-        Plataforma para gestionar clientes, mascotas y citas médicas; reportes y consulta paginada.
-        Interfaz rápida, clara y lista para producción.
-    </p>
-
-    <div class="d-flex flex-wrap gap-2">
-        <a class="btn btn-light fw-semibold" asp-controller="Reportes" asp-action="AnimalesConCitas">
-            Ver animales con citas
-        </a>
-        <a class="btn btn-outline-light fw-semibold" asp-controller="HistorialCitas" asp-action="Index">
-            Historial de citas
-        </a>
-        <a class="btn btn-outline-light fw-semibold" asp-controller="PagedCustomersMvc" asp-action="Index">
-            Búsqueda de clientes
-        </a>
+    <div class="col-lg-5">
+      <div class="kpi p-3">
+        <div class="row text-center g-3">
+          <div class="col-4">
+            <div class="fw-bold fs-4">—</div>
+            <div class="small opacity-75">Citas hoy</div>
+          </div>
+          <div class="col-4">
+            <div class="fw-bold fs-4">—</div>
+            <div class="small opacity-75">Agendadas</div>
+          </div>
+          <div class="col-4">
+            <div class="fw-bold fs-4">—</div>
+            <div class="small opacity-75">Canceladas</div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
+<!-- Tarjetas principales -->
 <div class="row g-4">
-    <div class="col-xl-4">
-        <div class="card card-tile h-100">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Gestión de Citas</h5>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2">
-                        <a asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a>
-                    </li>
-                    <li class="mb-2">
-                        <a asp-controller="Reportes" asp-action="AnimalesConCitas">Animales con Citas</a>
-                    </li>
-                    <li>
-                        <a href="/api/reportes/animales-con-citas" target="_blank">
-                            API: Animales con Citas (JSON)
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-xl-4">
-        <div class="card card-tile h-100">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Clientes & Mascotas</h5>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2">
-                        <a asp-controller="CustomerSearch" asp-action="Index">Búsqueda clásica</a>
-                    </li>
-                    <li class="mb-2">
-                        <a asp-controller="PagedCustomersMvc" asp-action="Index">Búsqueda paginada</a>
-                    </li>
-                    <li>
-                        <a asp-controller="PagedCustomersMvc" asp-action="Stats">Estadísticas de paginación</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <!-- Mantenimientos -->
+  <div class="col-xl-4">
+    <div class="card tile h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Mantenimientos (CRUD)</h5>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2">
+            <a asp-controller="TiposAnimales" asp-action="Index">Tipos de Animales</a>
+            <div class="small text-secondary">Definición y detalle de los tipos; ver animales por tipo.</div>
+          </li>
+          <li class="mb-2">
+            <a asp-controller="Clientes" asp-action="Index">Clientes</a>
+            <div class="small text-secondary">Gestión de clientes y sus mascotas registradas.</div>
+          </li>
+          <li>
+            <a asp-controller="Doctores" asp-action="Index">Doctores</a>
+            <div class="small text-secondary">Agenda semanal y disponibilidad por doctor.</div>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 
-    <div class="col-xl-4">
-        <div class="card card-tile h-100">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Módulos de Ejemplo</h5>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2">
-                        <a asp-controller="ProductsPerCategory" asp-action="Index">Productos por Categoría</a>
-                    </li>
-                    <li>
-                        <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <!-- Procesos de Citas -->
+  <div class="col-xl-4">
+    <div class="card tile h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Procesos de Citas</h5>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2"><a asp-controller="Citas" asp-action="GenerarSemana">Generar citas de la semana</a></li>
+          <li class="mb-2"><a asp-controller="Citas" asp-action="Agendar">Agendar cita (búsqueda aproximada)</a></li>
+          <li class="mb-2"><a asp-controller="Citas" asp-action="Reagendar">Reagendar cita</a></li>
+          <li><a asp-controller="Citas" asp-action="Cancelar">Cancelar cita</a></li>
+        </ul>
+      </div>
     </div>
+  </div>
+
+  <!-- Reportes & Búsquedas -->
+  <div class="col-xl-4">
+    <div class="card tile h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Reportes y Búsquedas</h5>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2"><a asp-controller="Reportes" asp-action="AnimalesConCitas">Reporte: Animales con Citas</a></li>
+          <li class="mb-2"><a asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a></li>
+          <li class="mb-2"><a asp-controller="CustomerSearch" asp-action="Index">Búsqueda clásica clientes</a></li>
+          <li><a asp-controller="PagedCustomersMvc" asp-action="Index">Búsqueda paginada clientes</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 </div>
-

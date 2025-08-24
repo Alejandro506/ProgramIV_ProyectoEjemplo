@@ -1,0 +1,80 @@
+@model myFirstProject.ViewModels.SemanaVM
+@{
+    ViewData["Title"] = "Citas de la semana";
+}
+
+<h2 class="mb-3">Citas de la semana</h2>
+
+<form method="get" asp-action="GenerarSemana" class="row g-3 mb-4">
+    <div class="col-sm-4">
+        <label class="form-label">Semana (lunes)</label>
+        <input type="date" name="week" class="form-control"
+               value="@Model.WeekStart.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-sm-4">
+        <label class="form-label">Doctor</label>
+        <select name="idDoctor" class="form-select">
+            <option value="">Todos</option>
+            @foreach (var d in Model.Doctores)
+            {
+                <option value="@d.Value" selected="@(Model.IdDoctor?.ToString() == d.Value)">
+                    @d.Text
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-sm-4 d-flex align-items-end">
+        <button class="btn btn-primary me-2">Ver</button>
+        <a class="btn btn-outline-secondary" asp-action="Nueva">Registrar cita</a>
+    </div>
+</form>
+
+@if (Model.Citas.Any())
+{
+    <h5 class="mt-2">Citas encontradas (@Model.Citas.Count)</h5>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Fecha/Hora</th>
+                <th>Animal</th>
+                <th>Cliente</th>
+                <th>Doctor</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var r in Model.Citas)
+        {
+            <tr>
+                <td>@r.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@r.Animal</td>
+                <td>@r.Cliente</td>
+                <td>@r.Doctor</td>
+                <td>@r.Estado</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No se encontraron citas en la semana seleccionada.</div>
+}
+
+@if (Model.IdDoctor.HasValue)
+{
+    <h5 class="mt-4">Disponibilidad del doctor (slots de 30 min)</h5>
+    @if (Model.Disponibles.Count == 0)
+    {
+        <div class="text-muted">Sin disponibilidad generada para esa semana.</div>
+    }
+    else
+    {
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var t in Model.Disponibles)
+            {
+                <span class="badge bg-success">@t.ToString("dd/MM HH:mm")</span>
+            }
+        </div>
+    }
+}

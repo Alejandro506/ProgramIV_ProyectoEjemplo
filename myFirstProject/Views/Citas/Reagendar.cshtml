@@ -1,0 +1,28 @@
+@model myFirstProject.ViewModels.ReagendarCitaVM
+@{
+    ViewData["Title"] = "Reagendar Cita";
+    string dtValue = (Model.NuevaFechaHora == default)
+        ? ""
+        : Model.NuevaFechaHora.ToString("yyyy-MM-ddTHH:mm");
+}
+<h2 class="mb-3">Reagendar Cita</h2>
+
+<form asp-action="Reagendar" method="post" class="row g-3">
+    <div class="col-12 col-md-4">
+        <label class="form-label">Id Cita</label>
+        <input asp-for="IdCita" class="form-control" />
+    </div>
+    <div class="col-12 col-md-8">
+        <label class="form-label">Nueva fecha y hora</label>
+        <input type="datetime-local" class="form-control" name="NuevaFechaHora"
+               value="@dtValue" step="1800" />
+    </div>
+    <div class="col-12">
+        <label class="form-label">Observaciones</label>
+        <input asp-for="Observaciones" class="form-control" />
+    </div>
+    <div class="col-12">
+        <button class="btn btn-warning">Reagendar</button>
+        <a asp-action="Nueva" class="btn btn-outline-secondary">Registrar nueva</a>
+    </div>
+</form>
