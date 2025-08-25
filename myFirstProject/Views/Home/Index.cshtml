@@ -5,6 +5,10 @@
     var slots = ViewBag.FreeSlots as IEnumerable<DateTime> ?? Enumerable.Empty<DateTime>();
     var topClientes = ViewBag.TopClientes as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
     var porTipo = ViewBag.AnimalesPorTipo as IDictionary<string,int> ?? new Dictionary<string,int>();
+
+    // Obtener Doctores sin async (evita ToListAsync en la vista)
+    var _db = Context.RequestServices.GetService<myFirstProject.Data.Models.AppDbContext>();
+    var doctoresDrop = _db!.Doctores.OrderBy(x => x.Nombre).ToList();
 }
 
 <style>
@@ -250,3 +254,183 @@
   /* Suaviza el contenedor para que no “salte” visualmente */
   .card-soft.card-tight { border-color:#eef2f7; }
 </style>
+
+<style>
+  /* Mini calendario semanal */
+  .mini-week { border-radius:16px; border:1px solid #e5e7eb; background:#fff; }
+  .mini-week .toolbar { display:flex; gap:.5rem; align-items:center; justify-content:space-between }
+  .mini-grid { display:grid; grid-template-columns: 110px repeat(7, 1fr); border-top:1px solid #eef2f7; }
+  .mini-colhead { padding:.5rem .6rem; font-weight:600; font-size:.9rem; color:#475569; background:#f8fafc; border-bottom:1px solid #eef2f7; }
+  .mini-time { padding:.4rem .5rem; font-size:.85rem; color:#64748b; border-right:1px solid #f1f5f9; }
+  .mini-cell { position:relative; padding:.3rem .35rem; border-right:1px solid #f1f5f9; border-bottom:1px solid #f1f5f9; min-height:34px; cursor:pointer }
+  .mini-cell.free:hover { background:#ecfeff; }
+  .mini-badge { display:inline-block; font-size:.72rem; padding:.1rem .35rem; border-radius:.35rem; }
+  .mini-badge.busy { background:#fee2e2; color:#991b1b; }
+  .mini-badge.free { background:#dcfce7; color:#166534; }
+  .mini-legend { gap:.75rem }
+</style>
+
+<div class="card mini-week mt-4">
+  <div class="card-body">
+    <div class="toolbar mb-3">
+      <div class="d-flex align-items-center gap-2">
+        <strong>Calendario semanal</strong>
+        <div class="mini-legend d-inline-flex align-items-center">
+          <span class="mini-badge busy">Ocupado</span>
+          <span class="mini-badge free">Libre</span>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <select id="mwDoctor" class="form-select form-select-sm" style="width:220px">
+          <option value="">— Selecciona doctor —</option>
+          @foreach (var d in doctoresDrop)
+          {
+            <option value="@d.IdDoctor">@d.Nombre</option>
+          }
+        </select>
+
+        <button id="mwPrev" class="btn btn-sm btn-outline-secondary"><i class="fa fa-chevron-left"></i></button>
+        <input id="mwWeek" type="date" class="form-control form-control-sm" style="width:160px">
+        <button id="mwNext" class="btn btn-sm btn-outline-secondary"><i class="fa fa-chevron-right"></i></button>
+
+        <a id="mwRegistrar" class="btn btn-sm btn-primary ms-2 disabled" href="#">
+          <i class="fa fa-plus me-1"></i> Registrar cita
+        </a>
+      </div>
+    </div>
+
+    <!-- encabezados -->
+    <div id="mwHead" class="mini-grid"></div>
+    <!-- filas de horas -->
+    <div id="mwBody" class="mini-grid"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Config: horario y paso (debe coincidir con tu servicio)
+  const STEP_MIN = 30;
+  const START_H  = 8;
+  const END_H    = 18; // sin incluir
+
+  const head = document.getElementById('mwHead');
+  const body = document.getElementById('mwBody');
+  const sel  = document.getElementById('mwDoctor');
+  const week = document.getElementById('mwWeek');
+  const prev = document.getElementById('mwPrev');
+  const next = document.getElementById('mwNext');
+  const btnReg = document.getElementById('mwRegistrar');
+
+  function weekStart(d){
+    const dd = new Date(d); const dow=(dd.getDay()+6)%7;
+    dd.setDate(dd.getDate()-dow); dd.setHours(0,0,0,0);
+    return dd;
+  }
+  function ymd(d){ return d.toISOString().substring(0,10); }
+  function hm(h,m){ return (h+'').padStart(2,'0')+':'+(m+'').padStart(2,'0'); }
+
+  function renderHead(base){
+    head.innerHTML = '';
+    const days = [...Array(8)].map(()=>document.createElement('div'));
+    days[0].className = 'mini-colhead';
+    days[0].textContent = 'Hora';
+    for(let i=0;i<7;i++){
+      const d = new Date(base); d.setDate(base.getDate()+i);
+      const el = days[i+1];
+      el.className = 'mini-colhead text-center';
+      el.innerHTML = d.toLocaleDateString('es-CR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace('.', '');
+    }
+    days.forEach(el=>head.appendChild(el));
+  }
+
+  function renderBody(base, data, doctor){
+    body.innerHTML = '';
+    const busy = new Map();
+    (data.usadas||[]).forEach(u=>{ busy.set(new Date(u.fechaHora).toISOString(), u); });
+    const free = new Set((data.libres||[]).map(x=>new Date(x).toISOString()));
+
+    btnReg.classList.add('disabled');
+    btnReg.dataset.target = '';
+
+    for(let h=START_H; h<END_H; h++){
+      for(let m=0; m<60; m+=STEP_MIN){
+        const timeCell = document.createElement('div');
+        timeCell.className = 'mini-time';
+        timeCell.textContent = hm(h,m);
+        body.appendChild(timeCell);
+
+        for(let i=0;i<7;i++){
+          const d = new Date(base); d.setDate(base.getDate()+i);
+          d.setHours(h,m,0,0);
+          const iso = d.toISOString();
+
+          const cell = document.createElement('div');
+          cell.className = 'mini-cell';
+
+          if(busy.has(iso)){
+            const u = busy.get(iso);
+            const b = document.createElement('span');
+            b.className = 'mini-badge busy';
+            b.textContent = (u.estado ?? 'Agendada');
+            cell.appendChild(b);
+
+            const small = document.createElement('div');
+            small.className = 'small text-muted';
+            small.textContent = `${u.animal} · ${u.cliente}`;
+            cell.appendChild(small);
+
+            cell.onclick = () => { window.location.href = `/Citas/Detalle/${u.idCita}`; };
+          } else if (free.has(iso)){
+            cell.classList.add('free');
+            const b = document.createElement('span');
+            b.className = 'mini-badge free';
+            b.textContent = 'Libre';
+            cell.appendChild(b);
+
+            cell.onclick = () => {
+              btnReg.classList.remove('disabled');
+              btnReg.href = `/Citas/Nueva?idDoctor=${doctor}&fechaHora=${encodeURIComponent(d.toISOString())}`;
+            };
+          } else {
+            cell.style.background = '#fafafa';
+            cell.style.cursor = 'default';
+          }
+
+          body.appendChild(cell);
+        }
+      }
+    }
+  }
+
+  async function load(){
+    const doctor = parseInt(sel.value||'0',10);
+    if(!doctor){ head.innerHTML=''; body.innerHTML='<div class="p-3 text-muted">Selecciona un doctor…</div>'; return; }
+
+    const base = weekStart(new Date(week.value || new Date()));
+    week.value = ymd(base);
+
+    renderHead(base);
+
+    const url = `/Citas/SemanaMiniJson?idDoctor=${doctor}&week=${week.value}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    renderBody(base, data, doctor);
+  }
+
+  const base = weekStart(new Date());
+  week.value = ymd(base);
+
+  sel.addEventListener('change', load);
+  week.addEventListener('change', load);
+  prev.addEventListener('click', ()=>{ const d=new Date(week.value); d.setDate(d.getDate()-7); week.value=ymd(d); load(); });
+  next.addEventListener('click', ()=>{ const d=new Date(week.value); d.setDate(d.getDate()+7); week.value=ymd(d); load(); });
+
+  (function autoSelectDoctor(){
+    const opts = [...sel.options].filter(o=>o.value);
+    if(opts.length===1){ sel.value = opts[0].value; }
+  })();
+
+  load();
+})();
+</script>

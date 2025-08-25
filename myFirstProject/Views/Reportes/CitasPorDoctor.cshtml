@@ -1,0 +1,62 @@
+@model IEnumerable<myFirstProject.Controllers.ReportesController.RowCitasDoctor>
+@{
+    ViewData["Title"] = "Resumen de Citas por Doctor";
+    var doctores = ViewBag.Doctores as List<SelectListItem> ?? new();
+    DateOnly? desde = ViewBag.Desde as DateOnly?;
+    DateOnly? hasta = ViewBag.Hasta as DateOnly?;
+    int? idDoctor = ViewBag.IdDoctor as int?;
+}
+<h2 class="mb-3">Resumen de Citas por Doctor</h2>
+
+<form class="row gy-2 gx-2 align-items-end mb-3" method="get">
+  <div class="col-md-auto">
+    <label class="form-label">Desde</label>
+    <input type="date" name="desde" class="form-control" value="@(desde?.ToString("yyyy-MM-dd"))" />
+  </div>
+  <div class="col-md-auto">
+    <label class="form-label">Hasta</label>
+    <input type="date" name="hasta" class="form-control" value="@(hasta?.ToString("yyyy-MM-dd"))" />
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Doctor</label>
+    <select name="idDoctor" class="form-select" asp-items="doctores">
+      <option value="">— Todos —</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary"><i class="fa fa-filter me-1"></i>Filtrar</button>
+  </div>
+</form>
+
+@if (!Model.Any())
+{
+  <div class="alert alert-info">No hay citas en el rango indicado.</div>
+}
+else
+{
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Doctor</th>
+          <th>Total</th>
+          <th>Agendadas</th>
+          <th>Canceladas</th>
+          <th>Última cita</th>
+        </tr>
+      </thead>
+      <tbody>
+      @foreach (var r in Model)
+      {
+        <tr>
+          <td>@r.Doctor</td>
+          <td>@r.Total</td>
+          <td>@r.Agendadas</td>
+          <td>@r.Canceladas</td>
+          <td>@r.UltimaCita.ToString("dd/MM/yyyy HH:mm")</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+}

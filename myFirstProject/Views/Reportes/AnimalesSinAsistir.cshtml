@@ -1,0 +1,45 @@
+@model IEnumerable<myFirstProject.Controllers.ReportesController.RowAnimalInactivo>
+@{
+    ViewData["Title"] = "Animales con tiempo sin asistir";
+    var dias = (int?)ViewBag.Dias ?? 180;
+}
+<h2 class="mb-3">Animales con <span class="text-primary">@dias</span> días (o más) sin asistir</h2>
+
+<form class="row gy-2 gx-2 align-items-end mb-3" method="get">
+  <div class="col-auto">
+    <label class="form-label">Días</label>
+    <input name="dias" type="number" class="form-control" value="@dias" min="30" step="30" />
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary"><i class="fa fa-search me-1"></i>Buscar</button>
+  </div>
+</form>
+
+@if (!Model.Any())
+{
+  <div class="alert alert-info">No hay animales con ese tiempo de inactividad.</div>
+}
+else
+{
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Animal</th>
+          <th>Última cita</th>
+        </tr>
+      </thead>
+      <tbody>
+      @foreach (var r in Model)
+      {
+        <tr>
+          <td>@r.Cliente</td>
+          <td>@r.Animal</td>
+          <td>@(r.UltimaCita?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca")</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+}

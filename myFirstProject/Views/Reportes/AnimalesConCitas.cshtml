@@ -1,26 +1,40 @@
-@model IEnumerable<myFirstProject.Data.Models.Vista_Animales_Cita>
+@model IEnumerable<myFirstProject.Controllers.ReportesController.RowAnimalCita>
+@{
+    ViewData["Title"] = "Animales con Citas";
+}
+<h2 class="mb-3">Animales con Citas</h2>
 
-<h2>Animales con citas</h2>
-<table class="table">
-    <thead>
+@if (!Model.Any())
+{
+  <div class="alert alert-info">No hay citas registradas.</div>
+}
+else
+{
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
         <tr>
-            <th>Animal</th>
-            <th>Cliente</th>
-            <th>Doctor</th>
-            <th>Fecha/Hora</th>
-            <th>Estado</th>
+          <th>#</th>
+          <th>Fecha/Hora</th>
+          <th>Animal</th>
+          <th>Cliente</th>
+          <th>Doctor</th>
+          <th>Estado</th>
         </tr>
-    </thead>
-    <tbody>
-    @foreach (var x in Model)
-    {
+      </thead>
+      <tbody>
+      @foreach (var r in Model)
+      {
         <tr>
-            <td>@x.NombreAnimal</td>
-            <td>@x.NombreCliente</td>
-            <td>@x.NombreDoctor</td>
-            <td>@x.FechaHora</td>
-            <td>@x.Estado</td>
+          <td>@r.IdCita</td>
+          <td>@r.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+          <td>@r.Animal</td>
+          <td>@r.Cliente</td>
+          <td>@r.Doctor</td>
+          <td>@r.Estado</td>
         </tr>
-    }
-    </tbody>
-</table>
+      }
+      </tbody>
+    </table>
+  </div>
+}
