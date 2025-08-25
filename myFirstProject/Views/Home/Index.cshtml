@@ -1,5 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Inicio";
+    // Helpers por si no hay datos:
+    var next = ViewBag.NextCitas as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var slots = ViewBag.FreeSlots as IEnumerable<DateTime> ?? Enumerable.Empty<DateTime>();
+    var topClientes = ViewBag.TopClientes as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var porTipo = ViewBag.AnimalesPorTipo as IDictionary<string,int> ?? new Dictionary<string,int>();
 }
 
 <style>
@@ -17,6 +22,13 @@
   .tile { border-radius:16px; border:1px solid #e5e7eb; transition:transform .12s ease, box-shadow .12s ease }
   .tile:hover { transform:translateY(-2px); box-shadow:0 14px 34px rgba(2,6,23,.18) }
   .kpi { border-radius:14px; border:1px dashed rgba(255,255,255,.25) }
+
+  /* Dashboard nuevo */
+  .card-soft { border:1px solid #eef2f7; border-radius:16px; }
+  .section-title { font-weight:700; font-size:1.05rem }
+  .pill { border:1px solid #e5e7eb; border-radius:999px; padding:.25rem .7rem; font-weight:600; }
+  .mini { font-size:.85rem }
+  .empty { color:#6b7280; }
 </style>
 
 <div class="hero p-4 p-md-5 mb-4">
@@ -29,26 +41,28 @@
   <div class="row align-items-center g-4">
     <div class="col-lg-7">
       <h1 class="display-5 fw-bold mb-3">
-        Bienvenido a <span style="color:#00e0ff;">Mi Mascota Consentida</span>
+        <span class="text-info">Bienvenido a Mi Mascota Consentida</span>
       </h1>
-      <p class="lead mb-4">Administra <b>tipos de animales</b>, <b>clientes</b>, <b>doctores</b> y todas las operaciones de <b>citas</b> (generar, agendar, reagendar, cancelar). Además, consulta reportes e historial.</p>
+      <p class="lead mb-4">
+        Administra <b>tipos de animales</b>, <b>clientes</b>, <b>doctores</b> y todas las operaciones de
+        <b>citas</b> (generar, agendar, reagendar, cancelar). Además, consulta reportes e historial.
+      </p>
 
-      <!-- Atajos por categorías -->
       <div class="d-flex flex-wrap gap-2">
         <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="Index">
-          <i class="fa fa-calendar-check me-1"></i> Citas
+          <i class="fa fa-calendar-check me-1"></i>Citas
         </a>
         <a class="btn btn-outline-light fw-semibold" asp-controller="Clientes" asp-action="Index">
-          <i class="fa fa-user me-1"></i> Clientes
+          <i class="fa fa-user me-1"></i>Clientes
         </a>
         <a class="btn btn-outline-light fw-semibold" asp-controller="Doctores" asp-action="Index">
-          <i class="fa fa-user-doctor me-1"></i> Doctores
+          <i class="fa fa-user-doctor me-1"></i>Doctores
         </a>
         <a class="btn btn-outline-light fw-semibold" asp-controller="TiposAnimales" asp-action="Index">
-          <i class="fa fa-paw me-1"></i> Tipos de Animales
+          <i class="fa fa-paw me-1"></i>Tipos de Animales
         </a>
         <a class="btn btn-outline-light fw-semibold" asp-controller="Reportes" asp-action="AnimalesConCitas">
-          <i class="fa fa-chart-column me-1"></i> Reportes
+          <i class="fa fa-chart-column me-1"></i>Reportes
         </a>
       </div>
     </div>
@@ -57,15 +71,15 @@
       <div class="kpi p-3">
         <div class="row text-center g-3">
           <div class="col-4">
-            <div class="fw-bold fs-4">@((ViewBag.CitasHoy ?? 0))</div>
+            <div class="fw-bold fs-4">@((int?)ViewBag.CitasHoy ?? 0)</div>
             <div class="small opacity-75">Citas hoy</div>
           </div>
           <div class="col-4">
-            <div class="fw-bold fs-4">@((ViewBag.CitasAgendadas ?? 0))</div>
+            <div class="fw-bold fs-4">@((int?)ViewBag.CitasAgendadas ?? 0)</div>
             <div class="small opacity-75">Agendadas</div>
           </div>
           <div class="col-4">
-            <div class="fw-bold fs-4">@((ViewBag.CitasCanceladas ?? 0))</div>
+            <div class="fw-bold fs-4">@((int?)ViewBag.CitasCanceladas ?? 0)</div>
             <div class="small opacity-75">Canceladas</div>
           </div>
         </div>
@@ -74,60 +88,165 @@
   </div>
 </div>
 
-<!-- Tarjetas principales -->
+<!-- === Nuevo panel de valor === -->
 <div class="row g-4">
 
-  <!-- Mantenimientos -->
-  <div class="col-xl-4">
-    <div class="card tile h-100">
+  <!-- Próximas citas -->
+  <div class="col-xxl-6">
+  <div class="card card-soft card-tight h-100">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="section-title">
+          <i class="fa fa-bell me-2"></i>Próximas citas (7 días)
+        </span>
+        <a class="btn btn-sm btn-outline-primary" asp-controller="Citas" asp-action="Index">
+          Ver todas
+        </a>
+      </div>
+
+      @if (!next.Any())
+      {
+        <div class="empty small">No hay citas próximas. <a asp-controller="Citas" asp-action="Nueva">Agenda una ahora</a>.</div>
+      }
+      else
+      {
+        <div class="table-responsive">
+          <table class="table table-citas align-middle mb-0">
+            <thead>
+              <tr>
+                <th class="idcol">#</th>
+                <th class="fechacol">Fecha/Hora</th>
+                <th>Animal</th>
+                <th>Cliente</th>
+                <th>Doctor</th>
+                <th class="accion">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+            @foreach (var c in next)
+            {
+              <tr>
+                <td class="idcol">@c.Id</td>
+                <td class="fechacol">@(((DateTime)c.Fecha).ToString("dd/MM/yyyy HH:mm"))</td>
+                <td>@c.Animal</td>
+                <td>@c.Cliente</td>
+                <td>@c.Doctor</td>
+                <td class="accion">
+                  <a class="btn btn-xxs btn-outline-secondary" asp-controller="Citas" asp-action="Detalle" asp-route-id="@c.Id">Detalle</a>
+                  <a class="btn btn-xxs btn-warning ms-1" asp-controller="Citas" asp-action="ReagendarListado" asp-route-q="@c.Animal">Reagendar</a>
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+
+  <!-- Disponibilidad + Resumen por tipo -->
+  <div class="col-xxl-6">
+    <div class="card card-soft h-100">
       <div class="card-body">
-        <h5 class="card-title mb-3">Mantenimientos (CRUD)</h5>
-        <ul class="list-unstyled mb-0">
-          <li class="mb-2">
-            <a asp-controller="TiposAnimales" asp-action="Index">Tipos de Animales</a>
-            <div class="small text-secondary">Definición y detalle de los tipos; ver animales por tipo.</div>
-          </li>
-          <li class="mb-2">
-            <a asp-controller="Clientes" asp-action="Index">Clientes</a>
-            <div class="small text-secondary">Gestión de clientes y sus mascotas registradas.</div>
-          </li>
-          <li>
-            <a asp-controller="Doctores" asp-action="Index">Doctores</a>
-            <div class="small text-secondary">Agenda semanal y disponibilidad por doctor.</div>
-          </li>
-        </ul>
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="section-title"><i class="fa fa-clock me-2"></i>Disponibilidad rápida</span>
+              <a class="btn btn-sm btn-outline-primary" asp-controller="Citas" asp-action="GenerarSemana">Citas de la semana</a>
+            </div>
+            @if (!slots.Any())
+            {
+                <div class="empty small">No hay huecos precalculados. Abre “Citas de la semana” para ver por doctor.</div>
+            }
+            else
+            {
+              <div class="d-flex flex-wrap gap-2">
+                @foreach (var s in slots.Take(8))
+                {
+                  <span class="pill mini"><i class="fa fa-calendar-day me-1"></i>@s.ToString("ddd dd/MM HH:mm")</span>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="col-lg-5">
+            <div class="section-title mb-2"><i class="fa fa-paw me-2"></i>Animales por tipo</div>
+            @if (!porTipo.Any())
+            {
+              <div class="empty small">Sin datos de tipos.</div>
+            }
+            else
+            {
+              <div class="d-flex flex-wrap gap-2">
+                @foreach (var kv in porTipo.OrderByDescending(k => k.Value).Take(10))
+                {
+                  <span class="pill mini">@kv.Key <span class="text-secondary">(@kv.Value)</span></span>
+                }
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Procesos de Citas -->
-  <div class="col-xl-4">
-    <div class="card tile h-100">
+  <!-- Top clientes -->
+  <div class="col-12">
+    <div class="card card-soft">
       <div class="card-body">
-        <h5 class="card-title mb-3">Procesos de Citas</h5>
-        <ul class="list-unstyled mb-0">
-          <li class="mb-2"><a asp-controller="Citas" asp-action="GenerarSemana">Generar citas de la semana</a></li>
-          <li class="mb-2"><a asp-controller="Citas" asp-action="Agendar">Agendar cita (búsqueda aproximada)</a></li>
-          <li class="mb-2"><a asp-controller="Citas" asp-action="Reagendar">Reagendar cita</a></li>
-          <li><a asp-controller="Citas" asp-action="Cancelar">Cancelar cita</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="section-title"><i class="fa fa-crown me-2"></i>Clientes con más mascotas</span>
+          <a class="btn btn-sm btn-outline-primary" asp-controller="Clientes" asp-action="Index">Ir a clientes</a>
+        </div>
 
-  <!-- Reportes & Búsquedas -->
-  <div class="col-xl-4">
-    <div class="card tile h-100">
-      <div class="card-body">
-        <h5 class="card-title mb-3">Reportes y Búsquedas</h5>
-        <ul class="list-unstyled mb-0">
-          <li class="mb-2"><a asp-controller="Reportes" asp-action="AnimalesConCitas">Reporte: Animales con Citas</a></li>
-          <li class="mb-2"><a asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a></li>
-          <li class="mb-2"><a asp-controller="CustomerSearch" asp-action="Index">Búsqueda clásica clientes</a></li>
-          <li><a asp-controller="PagedCustomersMvc" asp-action="Index">Búsqueda paginada clientes</a></li>
-        </ul>
+        @if (!topClientes.Any())
+        {
+            <div class="empty small">Aún no hay ranking de clientes.</div>
+        }
+        else
+        {
+          <div class="row g-3">
+            @foreach (var cl in topClientes.Take(5))
+            {
+              <div class="col-md-6 col-xl-4">
+                <div class="p-3 border rounded-3">
+                  <div class="d-flex justify-content-between">
+                    <div class="fw-semibold">@cl.Nombre</div>
+                    <div class="text-secondary small"><i class="fa fa-paw me-1"></i>@cl.Mascotas mascotas</div>
+                  </div>
+                  <div class="progress mt-2" style="height:6px;">
+                    @{
+                      int total = (int)(ViewBag.TotalAnimales ?? 0);
+                      int val = (int)cl.Mascotas;
+                      int pct = total > 0 ? (int)Math.Round(val * 100.0 / total) : 0;
+                    }
+                    <div class="progress-bar" role="progressbar" style="width:@pct%"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
   </div>
 
 </div>
+
+<style>
+  /* Compactor del panel izquierdo */
+  .card-tight .table td,
+  .card-tight .table th { padding: .45rem .6rem; }
+
+  .table-citas thead th { font-size:.82rem; color:#6b7280; letter-spacing:.2px; }
+  .table-citas .idcol   { width: 54px; }
+  .table-citas .fechacol{ white-space:nowrap; width: 150px; }
+  .table-citas .accion  { width: 160px; text-align:right; }
+
+  .btn-xxs { padding:.18rem .55rem; font-size:.8rem; border-radius:.5rem; }
+
+  /* Suaviza el contenedor para que no “salte” visualmente */
+  .card-soft.card-tight { border-color:#eef2f7; }
+</style>
