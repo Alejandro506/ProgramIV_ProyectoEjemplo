@@ -61,3 +61,8 @@ a:hover { color:#1d4ed8; }
 .card, .table, .form-control, .dropdown-menu, .modal-content {
     border-radius: 12px !important;
 }
+
+.brand-highlight{
+  color:#00d1ff;             /* cian brillante legible sobre fondos oscuros */
+  text-shadow: 0 2px 10px rgba(0, 209, 255, 0.35);
+}

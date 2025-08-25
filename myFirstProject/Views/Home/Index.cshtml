@@ -28,14 +28,28 @@
 
   <div class="row align-items-center g-4">
     <div class="col-lg-7">
-      <h1 class="display-5 fw-bold mb-3">Bienvenido a <span class="text-info">Mi Mascota Consentida</span></h1>
+      <h1 class="display-5 fw-bold mb-3">
+        Bienvenido a <span style="color:#00e0ff;">Mi Mascota Consentida</span>
+      </h1>
       <p class="lead mb-4">Administra <b>tipos de animales</b>, <b>clientes</b>, <b>doctores</b> y todas las operaciones de <b>citas</b> (generar, agendar, reagendar, cancelar). Además, consulta reportes e historial.</p>
 
+      <!-- Atajos por categorías -->
       <div class="d-flex flex-wrap gap-2">
-        <a class="btn btn-light fw-semibold" asp-controller="Citas" asp-action="Agendar">Agendar cita</a>
-        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="Reagendar">Reagendar</a>
-        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="Cancelar">Cancelar</a>
-        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="GenerarSemana">Generar semana</a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Citas" asp-action="Index">
+          <i class="fa fa-calendar-check me-1"></i> Citas
+        </a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Clientes" asp-action="Index">
+          <i class="fa fa-user me-1"></i> Clientes
+        </a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Doctores" asp-action="Index">
+          <i class="fa fa-user-doctor me-1"></i> Doctores
+        </a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="TiposAnimales" asp-action="Index">
+          <i class="fa fa-paw me-1"></i> Tipos de Animales
+        </a>
+        <a class="btn btn-outline-light fw-semibold" asp-controller="Reportes" asp-action="AnimalesConCitas">
+          <i class="fa fa-chart-column me-1"></i> Reportes
+        </a>
       </div>
     </div>
 
@@ -43,15 +57,15 @@
       <div class="kpi p-3">
         <div class="row text-center g-3">
           <div class="col-4">
-            <div class="fw-bold fs-4">—</div>
+            <div class="fw-bold fs-4">@((ViewBag.CitasHoy ?? 0))</div>
             <div class="small opacity-75">Citas hoy</div>
           </div>
           <div class="col-4">
-            <div class="fw-bold fs-4">—</div>
+            <div class="fw-bold fs-4">@((ViewBag.CitasAgendadas ?? 0))</div>
             <div class="small opacity-75">Agendadas</div>
           </div>
           <div class="col-4">
-            <div class="fw-bold fs-4">—</div>
+            <div class="fw-bold fs-4">@((ViewBag.CitasCanceladas ?? 0))</div>
             <div class="small opacity-75">Canceladas</div>
           </div>
         </div>

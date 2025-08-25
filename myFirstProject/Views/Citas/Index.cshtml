@@ -1,0 +1,106 @@
+@model myFirstProject.ViewModels.CitasListadoVM
+@{
+    ViewData["Title"] = "Citas";
+    var f = Model.Filtro;
+    string vDesde = f.Desde?.ToString("yyyy-MM-dd") ?? "";
+    string vHasta = f.Hasta?.ToString("yyyy-MM-dd") ?? "";
+}
+<h2 class="mb-3">Citas</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-4">
+        <input class="form-control" name="Q" value="@f.Q" placeholder="Buscar (animal o cliente)..." />
+    </div>
+    <div class="col-sm-3">
+        <select name="IdDoctor" class="form-select">
+            <option value="">— Todos los doctores —</option>
+            @foreach (var d in Model.Doctores)
+            {
+                <option value="@d.Value" selected="@(f.IdDoctor?.ToString()==d.Value)">@d.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <select name="Estado" class="form-select">
+            <option value="">— Todos los estados —</option>
+            @foreach (var e in new[] { "Agendada", "Reagendada", "Cancelada" })
+            {
+                <option value="@e" selected="@(f.Estado==e)">@e</option>
+            }
+        </select>
+    </div>
+    <div class="col-sm-1">
+        <input type="date" name="Desde" value="@vDesde" class="form-control" />
+    </div>
+    <div class="col-sm-1">
+        <input type="date" name="Hasta" value="@vHasta" class="form-control" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Buscar</button>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Nueva" class="btn btn-success">Registrar</a>
+    </div>
+</form>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Fecha/Hora</th>
+            <th>Animal</th>
+            <th>Cliente</th>
+            <th>Doctor</th>
+            <th>Estado</th>
+            <th class="text-end">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model.Citas)
+    {
+        var paso = 1800; // 30 min
+        <tr>
+            <td>@c.IdCita</td>
+            <td>@c.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@c.Animal</td>
+            <td>@c.Cliente</td>
+            <td>@c.Doctor</td>
+            <td>
+                <span class="badge bg-@(c.Estado=="Cancelada"?"danger": (c.Estado=="Agendada"?"success":"warning"))">
+                    @c.Estado
+                </span>
+            </td>
+            <td class="text-end">
+                <a asp-action="Detalle" asp-route-id="@c.IdCita"
+                   class="btn btn-sm btn-outline-secondary">Detalle</a>
+
+                <!-- Reagendar inline -->
+                <form asp-action="Reagendar" method="post" class="d-inline ms-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="IdCita" value="@c.IdCita" />
+                    <input type="datetime-local" name="NuevaFechaHora"
+                           class="form-control d-inline"
+                           style="width: 210px"
+                           step="@paso" />
+                    <input type="hidden" name="Observaciones" value="Reagendado desde listado" />
+                    <button class="btn btn-sm btn-warning ms-1"
+                            onclick="return confirm('¿Reagendar la cita @c.IdCita?');">
+                        Reagendar
+                    </button>
+                </form>
+
+                <!-- Cancelar inline -->
+                <form asp-action="Cancelar" method="post" class="d-inline ms-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="IdCita" value="@c.IdCita" />
+                    <input type="hidden" name="Observaciones" value="Cancelada desde listado" />
+                    <button class="btn btn-sm btn-danger"
+                            onclick="return confirm('¿Cancelar la cita @c.IdCita?');">
+                        Cancelar
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

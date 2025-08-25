@@ -22,6 +22,64 @@ public class CitasController : Controller
     [HttpGet]
     public IActionResult Agendar() => RedirectToAction(nameof(Nueva));
 
+    // ================= Listado general (/Citas) =================
+    // GET /Citas?Q=ana&IdDoctor=1&Estado=Agendada&Desde=2025-08-01&Hasta=2025-08-31
+    [HttpGet]
+    public async Task<IActionResult> Index([FromQuery] CitasListadoFiltroVM f)
+    {
+        var start = (f.Desde ?? DateOnly.FromDateTime(DateTime.Today.AddDays(-7)))
+                       .ToDateTime(TimeOnly.MinValue);
+        var end   = (f.Hasta ?? DateOnly.FromDateTime(DateTime.Today.AddDays(30)))
+                       .ToDateTime(TimeOnly.MaxValue);
+
+        var q = _db.Citas
+            .Include(c => c.IdAnimalNavigation)!.ThenInclude(a => a.IdClienteNavigation)
+            .Include(c => c.IdDoctorNavigation)
+            .Where(c => c.FechaHora >= start && c.FechaHora <= end);
+
+        if (!string.IsNullOrWhiteSpace(f.Q))
+        {
+            var term = f.Q.Trim();
+            q = q.Where(c =>
+                EF.Functions.Like(c.IdAnimalNavigation!.Nombre!, $"%{term}%") ||
+                EF.Functions.Like(c.IdAnimalNavigation!.IdClienteNavigation!.Nombre!, $"%{term}%"));
+        }
+
+        if (f.IdDoctor.HasValue)
+            q = q.Where(c => c.IdDoctor == f.IdDoctor.Value);
+
+        if (!string.IsNullOrWhiteSpace(f.Estado))
+            q = q.Where(c => c.Estado == f.Estado);
+
+        var items = await q
+            .OrderByDescending(c => c.FechaHora)
+            .Take(500)
+            .Select(c => new CitasListadoItemVM
+            {
+                IdCita = c.IdCita,
+                FechaHora = c.FechaHora,
+                Animal = c.IdAnimalNavigation!.Nombre!,
+                Cliente = c.IdAnimalNavigation!.IdClienteNavigation!.Nombre!,
+                Doctor = c.IdDoctorNavigation!.Nombre!,
+                Estado = c.Estado ?? ""
+            })
+            .ToListAsync();
+
+        var doctores = await _db.Doctores
+            .OrderBy(d => d.Nombre)
+            .Select(d => new SelectListItem { Value = d.IdDoctor.ToString(), Text = d.Nombre! })
+            .ToListAsync();
+
+        var vm = new CitasListadoVM
+        {
+            Filtro = f,
+            Doctores = doctores,
+            Citas = items
+        };
+
+        return View("Index", vm);
+    }
+
     // GET /Citas/Reagendar (formulario simple)
     [HttpGet]
     public IActionResult Reagendar()
@@ -33,7 +91,7 @@ public class CitasController : Controller
         });
     }
 
-    // ================= Reagendar: LISTADO (nuevo) =================
+    // ================= Reagendar: LISTADO =================
     // GET /Citas/ReagendarListado?q=ana&desde=2025-08-01&hasta=2025-08-31&incluirCanceladas=true
     [HttpGet]
     public async Task<IActionResult> ReagendarListado(string? q, DateOnly? desde, DateOnly? hasta, bool incluirCanceladas = false)
@@ -136,7 +194,7 @@ public class CitasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Cancelar(CancelarCitaVM vm)
     {
-        if (!ModelState.IsValid) return View(vm);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
         await _svc.CancelarCita(vm.IdCita, vm.Observaciones);
         TempData["ok"] = "Cita cancelada.";
         return RedirectToAction(nameof(Detalle), new { id = vm.IdCita });

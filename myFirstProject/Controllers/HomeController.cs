@@ -1,31 +1,29 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using myFirstProject.Models;
-
-namespace myFirstProject.Controllers;
+using Microsoft.EntityFrameworkCore;
+using myFirstProject.Data.Models;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly AppDbContext _db;
+    public HomeController(AppDbContext db) => _db = db;
 
-    public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index()
     {
-        _logger = logger;
-    }
+        var todayStart = DateTime.Today;
+        var todayEnd = todayStart.AddDays(1);
 
-    public IActionResult Index()
-    {
+        // Citas de hoy (solo agendadas)
+        var citasHoy = await _db.Citas
+            .CountAsync(c => c.Estado == "Agendada" && c.FechaHora >= todayStart && c.FechaHora < todayEnd);
+
+        // Totales
+        var agendadas = await _db.Citas.CountAsync(c => c.Estado == "Agendada");
+        var canceladas = await _db.Citas.CountAsync(c => c.Estado == "Cancelada");
+
+        ViewBag.CitasHoy = citasHoy;
+        ViewBag.CitasAgendadas = agendadas;
+        ViewBag.CitasCanceladas = canceladas;
+
         return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

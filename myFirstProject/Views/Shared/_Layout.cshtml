@@ -14,7 +14,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
                 Mi Mascota Consentida
             </a>
 
@@ -24,73 +24,51 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <!-- Mantenimientos -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fa fa-wrench me-1"></i>Mantenimientos
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="TiposAnimales" asp-action="Index"><i class="fa fa-paw me-2"></i>Tipos de Animales</a></li>
-                            <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index"><i class="fa fa-user me-2"></i>Clientes</a></li>
-                            <li><a class="dropdown-item" asp-controller="Doctores" asp-action="Index"><i class="fa fa-user-doctor me-2"></i>Doctores</a></li>
-                        </ul>
-                    </li>
+                <!-- Espacio entre brand y menú + separación entre items -->
+                <ul class="navbar-nav ms-4 gap-3 me-auto mb-2 mb-lg-0">
 
-                    <!-- Citas -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <!-- Citas (SIN submenú) -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Citas" asp-action="Index">
                             <i class="fa fa-calendar-check me-1"></i>Citas
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="Nueva"><i class="fa fa-plus me-2"></i>Registrar cita</a></li>
-                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="ReagendarListado"><i class="fa fa-clock-rotate-left me-2"></i>Reagendar cita</a></li>
-                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="Cancelar"><i class="fa fa-ban me-2"></i>Cancelar cita</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="GenerarSemana"><i class="fa fa-calendar-week me-2"></i>Citas de la semana</a></li>
-                            <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index"><i class="fa fa-list-ul me-2"></i>Historial de Citas</a></li>
-                        </ul>
                     </li>
 
-                    <!-- Reportes -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <!-- Clientes -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Clientes" asp-action="Index">
+                            <i class="fa fa-user me-1"></i>Clientes
+                        </a>
+                    </li>
+
+                    <!-- Doctores -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Doctores" asp-action="Index">
+                            <i class="fa fa-user-doctor me-1"></i>Doctores
+                        </a>
+                    </li>
+
+                    <!-- Tipos de Animales -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="TiposAnimales" asp-action="Index">
+                            <i class="fa fa-paw me-1"></i>Tipos de Animales
+                        </a>
+                    </li>
+
+                    <!-- Reportes (link directo al principal) -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Reportes" asp-action="AnimalesConCitas">
                             <i class="fa fa-chart-column me-1"></i>Reportes
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="Reportes" asp-action="AnimalesConCitas"><i class="fa fa-dog me-2"></i>Animales con Citas</a></li>
-                            <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index"><i class="fa fa-clock me-2"></i>Historial de Citas</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Búsquedas -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fa fa-magnifying-glass me-1"></i>Búsquedas
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="CustomerSearch" asp-action="Index"><i class="fa fa-search me-2"></i>Clásica</a></li>
-                            <li><a class="dropdown-item" asp-controller="PagedCustomersMvc" asp-action="Index"><i class="fa fa-list-ol me-2"></i>Paginada</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- API -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fa fa-plug me-1"></i>API
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/api/reportes/animales-con-citas" target="_blank"><i class="fa fa-code me-2"></i>Animales con Citas (JSON)</a></li>
-                        </ul>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
                 </ul>
             </div>
@@ -123,7 +101,7 @@
 <footer class="border-top footer text-muted">
     <div class="container">
         &copy; 2025 - Mi Mascota Consentida -
-        <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <a asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>
 </footer>
 
