@@ -1,0 +1,20 @@
+@model myFirstProject.Controllers.DoctoresController.DoctorForm
+@{
+    ViewData["Title"] = "Editar doctor";
+}
+<h2 class="mb-3">Editar doctor</h2>
+
+<form asp-action="Edit" method="post" class="row g-3">
+    <input type="hidden" asp-for="IdDoctor" />
+    <div class="col-sm-6">
+        <label class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-warning">Guardar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

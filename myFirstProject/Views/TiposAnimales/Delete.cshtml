@@ -1,0 +1,28 @@
+@model myFirstProject.Data.Models.TiposAnimale
+@{
+    ViewData["Title"] = "Eliminar Tipo de Animal";
+    int cant = ViewBag.CantAnimales ?? 0;
+}
+<h2 class="mb-3 text-danger">Eliminar Tipo de Animal</h2>
+
+<div class="alert alert-warning">
+    <strong>Atención:</strong> Estás a punto de eliminar el tipo <strong>@(Model.Descripcion ?? "")</strong> (Id: @Model.IdTipo).
+    <br />
+    Animales asociados: <strong>@cant</strong>.
+</div>
+
+@if (cant > 0)
+{
+    <div class="alert alert-danger">
+        No se puede eliminar porque existen animales registrados con este tipo.
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+}
+else
+{
+    <form asp-action="Delete" method="post" class="d-inline">
+        <input type="hidden" name="id" value="@Model.IdTipo" />
+        <button class="btn btn-danger">Eliminar definitivamente</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancelar</a>
+    </form>
+}

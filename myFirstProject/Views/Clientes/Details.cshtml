@@ -1,0 +1,29 @@
+@model IEnumerable<myFirstProject.Controllers.ClientesController.AnimalRow>
+@{
+    var c = (myFirstProject.Data.Models.Cliente)ViewBag.Cliente;
+    ViewData["Title"] = "Detalle de cliente";
+}
+<h2 class="mb-1">Cliente: @c.Nombre</h2>
+<p class="text-muted">Animales registrados</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Id Animal</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model)
+    {
+        <tr>
+            <td>@a.IdAnimal</td>
+            <td>@a.Nombre</td>
+            <td>@a.Tipo</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-outline-secondary">Volver</a>

@@ -1,0 +1,22 @@
+@model myFirstProject.Data.Models.Doctore
+@{
+    ViewData["Title"] = "Eliminar doctor";
+    int cant = ViewBag.CantCitas ?? 0;
+}
+<h2 class="mb-3">Eliminar doctor</h2>
+
+<div class="alert alert-warning">
+    ¿Desea eliminar al doctor <strong>@Model.Nombre</strong>?
+    @if (cant > 0)
+    {
+        <div class="mt-2 text-danger">
+            No se puede eliminar: tiene @cant citas registradas.
+        </div>
+    }
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.IdDoctor" />
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    <button class="btn btn-danger" @(cant > 0 ? "disabled" : null)>Eliminar</button>
+</form>

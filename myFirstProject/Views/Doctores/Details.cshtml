@@ -1,0 +1,39 @@
+@model IEnumerable<myFirstProject.Controllers.DoctoresController.CitaRow>
+@{
+    var d = (myFirstProject.Data.Models.Doctore)ViewBag.Doctor;
+    ViewData["Title"] = "Detalle de doctor";
+}
+<h2 class="mb-1">Doctor: @d.Nombre</h2>
+<p class="text-muted">Citas (recientes)</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Id Cita</th>
+            <th>Fecha/Hora</th>
+            <th>Animal</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th class="text-end">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model)
+    {
+        <tr>
+            <td>@c.IdCita</td>
+            <td>@c.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@c.Animal</td>
+            <td>@c.Cliente</td>
+            <td>
+                <span class="badge bg-@(c.Estado == "Cancelada" ? "danger" : "success")">@c.Estado</span>
+            </td>
+            <td class="text-end">
+                <a asp-controller="Citas" asp-action="Detalle" asp-route-id="@c.IdCita" class="btn btn-sm btn-outline-secondary">Ver cita</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-outline-secondary">Volver</a>

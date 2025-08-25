@@ -11,110 +11,135 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm sticky-top">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    Mi Mascota Consentida
-                </a>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                Mi Mascota Consentida
+            </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="collapse navbar-collapse" id="mainNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <!-- Mantenimientos -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                Mantenimientos
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="TiposAnimales" asp-action="Index">Tipos de Animales</a></li>
-                                <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
-                                <li><a class="dropdown-item" asp-controller="Doctores" asp-action="Index">Doctores</a></li>
-                            </ul>
-                        </li>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Mantenimientos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-wrench me-1"></i>Mantenimientos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="TiposAnimales" asp-action="Index"><i class="fa fa-paw me-2"></i>Tipos de Animales</a></li>
+                            <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index"><i class="fa fa-user me-2"></i>Clientes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Doctores" asp-action="Index"><i class="fa fa-user-doctor me-2"></i>Doctores</a></li>
+                        </ul>
+                    </li>
 
-                        <!-- Citas -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                Citas
-                            </a>
-                            <ul class="dropdown-menu">
-                                
-                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="Nueva">Registrar cita</a></li>
-                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="ReagendarListado">Reagendar cita</a></li>
-                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="Cancelar">Cancelar cita</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="GenerarSemana">Citas de la semana</a></li>
-                                <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a></li>
-                            </ul>
-                        </li>
+                    <!-- Citas -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-calendar-check me-1"></i>Citas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="Nueva"><i class="fa fa-plus me-2"></i>Registrar cita</a></li>
+                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="ReagendarListado"><i class="fa fa-clock-rotate-left me-2"></i>Reagendar cita</a></li>
+                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="Cancelar"><i class="fa fa-ban me-2"></i>Cancelar cita</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" asp-controller="Citas" asp-action="GenerarSemana"><i class="fa fa-calendar-week me-2"></i>Citas de la semana</a></li>
+                            <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index"><i class="fa fa-list-ul me-2"></i>Historial de Citas</a></li>
+                        </ul>
+                    </li>
 
-                        <!-- Reportes -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                Reportes
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Reportes" asp-action="AnimalesConCitas">Animales con Citas</a></li>
-                                <li><a class="dropdown-item" asp-controller="Citas" asp-action="GenerarSemana">Citas de la semana</a></li>
-                                <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index">Historial de Citas</a></li>
-                            </ul>
-                        </li>
+                    <!-- Reportes -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-chart-column me-1"></i>Reportes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Reportes" asp-action="AnimalesConCitas"><i class="fa fa-dog me-2"></i>Animales con Citas</a></li>
+                            <li><a class="dropdown-item" asp-controller="HistorialCitas" asp-action="Index"><i class="fa fa-clock me-2"></i>Historial de Citas</a></li>
+                        </ul>
+                    </li>
 
-                        <!-- Búsquedas -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                Búsquedas
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="CustomerSearch" asp-action="Index">Clásica</a></li>
-                                <li><a class="dropdown-item" asp-controller="PagedCustomersMvc" asp-action="Index">Paginada</a></li>
-                            </ul>
-                        </li>
+                    <!-- Búsquedas -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-magnifying-glass me-1"></i>Búsquedas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="CustomerSearch" asp-action="Index"><i class="fa fa-search me-2"></i>Clásica</a></li>
+                            <li><a class="dropdown-item" asp-controller="PagedCustomersMvc" asp-action="Index"><i class="fa fa-list-ol me-2"></i>Paginada</a></li>
+                        </ul>
+                    </li>
 
-                        <!-- API -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                API
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/api/reportes/animales-con-citas" target="_blank">Animales con Citas (JSON)</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <!-- API -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-plug me-1"></i>API
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/api/reportes/animales-con-citas" target="_blank"><i class="fa fa-code me-2"></i>Animales con Citas (JSON)</a></li>
+                        </ul>
+                    </li>
+                </ul>
 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
-
-    <div class="container my-3">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Mi Mascota Consentida - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </nav>
+</header>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<div class="container my-3">
+    <!-- Mensajes de TempData -->
+    @if (TempData["ok"] is string ok && !string.IsNullOrWhiteSpace(ok))
+    {
+        <div class="alert alert-success alert-dismissible fade show small" role="alert">
+            <i class="fa fa-check-circle me-1"></i>@ok
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["err"] is string err && !string.IsNullOrWhiteSpace(err))
+    {
+        <div class="alert alert-danger alert-dismissible fade show small" role="alert">
+            <i class="fa fa-triangle-exclamation me-1"></i>@err
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2025 - Mi Mascota Consentida -
+        <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    // Auto-cerrar alertas luego de 5s
+    window.addEventListener('load', () => {
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(a => setTimeout(() => {
+            const alert = bootstrap.Alert.getOrCreateInstance(a);
+            alert.close();
+        }, 5000));
+    });
+</script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
